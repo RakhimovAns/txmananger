@@ -1,10 +1,8 @@
-module github.com/defany/db/v2
+module github.com/RakhimovAns/db/v1
 
 go 1.24.4
 
 require (
-	github.com/defany/db v1.2.0
-	github.com/defany/slogger v1.1.0
 	github.com/gookit/goutil v0.6.18
 	github.com/jackc/pgx/v5 v5.7.4
 	github.com/pkg/errors v0.9.1

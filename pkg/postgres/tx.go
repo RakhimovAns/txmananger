@@ -7,7 +7,6 @@ import (
 	errs "errors"
 	"fmt"
 
-	slerr "github.com/defany/slogger/pkg/err"
 	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgconn"
 	"github.com/pkg/errors"
@@ -118,10 +117,10 @@ func (t *txManager) RepeatableRead(ctx context.Context, retryAmount uint, handle
 			continue
 		}
 
-		return slerr.WithSource(err)
+		return err
 	}
 
-	return slerr.WithSource(err)
+	return err
 }
 
 func (t *txManager) Serializable(ctx context.Context, retryAmount uint, handler Handler) error {
@@ -141,10 +140,10 @@ func (t *txManager) Serializable(ctx context.Context, retryAmount uint, handler 
 			continue
 		}
 
-		return slerr.WithSource(err)
+		return err
 	}
 
-	return slerr.WithSource(err)
+	return err
 }
 
 func InjectTX(ctx context.Context, tx Tx) context.Context {

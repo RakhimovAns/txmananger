@@ -5,8 +5,7 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/defany/db/v2/pkg/postgres"
-	slerr "github.com/defany/slogger/pkg/err"
+	"github.com/RakhimovAns/db/v2/pkg/postgres"
 	"github.com/defany/slogger/pkg/logger/sl"
 	"github.com/gookit/goutil/arrutil"
 	"github.com/jackc/pgx/v5"
@@ -174,7 +173,7 @@ func (r *Repository[T]) JobStatuses(ctx context.Context, ids ...int64) ([]JobSta
 
 	jobs, err := r.river.JobList(ctx, params)
 	if err != nil {
-		return nil, slerr.WithSource(err)
+		return nil, err
 	}
 
 	statuses := arrutil.Map(jobs.Jobs, func(input *rivertype.JobRow) (target JobStatus, find bool) {
@@ -196,7 +195,7 @@ func (r *Repository[T]) FetchJobs(ctx context.Context, ids ...int64) ([]*riverty
 
 	jobs, err := r.river.JobList(ctx, params)
 	if err != nil {
-		return nil, slerr.WithSource(err)
+		return nil, err
 	}
 
 	if jobs == nil {
@@ -209,7 +208,7 @@ func (r *Repository[T]) FetchJobs(ctx context.Context, ids ...int64) ([]*riverty
 func (r *Repository[T]) FetchJob(ctx context.Context, id int64) (*rivertype.JobRow, error) {
 	jobs, err := r.FetchJobs(ctx, id)
 	if err != nil {
-		return nil, slerr.WithSource(err)
+		return nil, err
 	}
 
 	if len(jobs) == 0 {
