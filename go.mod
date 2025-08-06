@@ -1,4 +1,4 @@
-module github.com/RakhimovAns/db/v1
+module github.com/RakhimovAns/txmananger
 
 go 1.24.4
 
