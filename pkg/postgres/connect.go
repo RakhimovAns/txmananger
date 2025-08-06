@@ -3,11 +3,9 @@ package postgres
 import (
 	"context"
 	"fmt"
+	"github.com/RakhimovAns/txmananger/pkg/retry"
 	"log/slog"
 	"time"
-
-	"github.com/RakhimovAns/db/v2/pkg/retry"
-	"github.com/defany/slogger/pkg/logger/sl"
 
 	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgxpool"
@@ -119,7 +117,7 @@ func NewClient(ctx context.Context, log *slog.Logger, cfg *Config) (pool *pgxpoo
 
 		pgxCfg, err := pgxpool.ParseConfig(dsn)
 		if err != nil {
-			log.Error("Unable to parse configs", sl.ErrAttr(err))
+			log.Error("Unable to parse configs", slog.Any("err", err))
 			return err
 		}
 
@@ -147,13 +145,13 @@ func NewClient(ctx context.Context, log *slog.Logger, cfg *Config) (pool *pgxpoo
 
 		pool, err = pgxpool.NewWithConfig(connectCtx, pgxCfg)
 		if err != nil {
-			log.Error("failed to connect to postgres...", sl.ErrAttr(err))
+			log.Error("failed to connect to postgres...", slog.Any("err", err))
 			return err
 		}
 
 		err = pool.Ping(ctx)
 		if err != nil {
-			log.Error("ping to postgres failed...", sl.ErrAttr(err))
+			log.Error("ping to postgres failed...", slog.Any("err", err))
 		}
 
 		return err

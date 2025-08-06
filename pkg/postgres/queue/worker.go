@@ -3,10 +3,9 @@ package queue
 import (
 	"context"
 	"fmt"
+	"github.com/RakhimovAns/txmananger/pkg/postgres"
 	"time"
 
-	"github.com/RakhimovAns/db/v2/pkg/postgres"
-	"github.com/defany/slogger/pkg/logger/sl"
 	"github.com/gookit/goutil/arrutil"
 	"github.com/jackc/pgx/v5"
 	"github.com/riverqueue/river"
@@ -67,7 +66,6 @@ func (r *Repository[T]) Put(ctx context.Context, args T) (int64, error) {
 }
 
 func (r *Repository[T]) PutBatch(ctx context.Context, args ...T) ([]int64, error) {
-	op := sl.FnName()
 
 	insertParams := make([]river.InsertManyParams, 0, len(args))
 	for _, arg := range args {
@@ -80,7 +78,7 @@ func (r *Repository[T]) PutBatch(ctx context.Context, args ...T) ([]int64, error
 	if ok {
 		out, err := r.river.InsertManyTx(ctx, tx, insertParams)
 		if err != nil {
-			return nil, sl.Err(op, err)
+			return nil, err
 		}
 
 		jobIds := arrutil.Map(out, func(input *rivertype.JobInsertResult) (target int64, find bool) {
@@ -92,7 +90,7 @@ func (r *Repository[T]) PutBatch(ctx context.Context, args ...T) ([]int64, error
 
 	out, err := r.river.InsertMany(ctx, insertParams)
 	if err != nil {
-		return nil, sl.Err(op, err)
+		return nil, err
 	}
 
 	jobIds := arrutil.Map(out, func(input *rivertype.JobInsertResult) (target int64, find bool) {
@@ -126,7 +124,6 @@ func (r *Repository[T]) PutWithOpts(ctx context.Context, options Options, args T
 }
 
 func (r *Repository[T]) PutBatchWithOpts(ctx context.Context, options Options, args ...T) ([]int64, error) {
-	op := sl.FnName()
 
 	insertParams := make([]river.InsertManyParams, 0, len(args))
 	for _, arg := range args {
@@ -142,7 +139,7 @@ func (r *Repository[T]) PutBatchWithOpts(ctx context.Context, options Options, a
 	if ok {
 		out, err := r.river.InsertManyTx(ctx, tx, insertParams)
 		if err != nil {
-			return nil, sl.Err(op, err)
+			return nil, err
 		}
 
 		jobIds := arrutil.Map(out, func(input *rivertype.JobInsertResult) (target int64, find bool) {
@@ -154,7 +151,7 @@ func (r *Repository[T]) PutBatchWithOpts(ctx context.Context, options Options, a
 
 	out, err := r.river.InsertMany(ctx, insertParams)
 	if err != nil {
-		return nil, sl.Err(op, err)
+		return nil, err
 	}
 
 	jobIds := arrutil.Map(out, func(input *rivertype.JobInsertResult) (target int64, find bool) {
